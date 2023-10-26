@@ -1,6 +1,6 @@
 namespace GraphQL.Demo.Api.Domain;
 
-public class StudentType
+public class Student
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; }
