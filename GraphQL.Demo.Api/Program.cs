@@ -13,6 +13,8 @@ builder.Services.AddGraphQLServer()
     .AddSubscriptionType<CourseSubscription>()
     .AddInMemorySubscriptions();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -29,5 +31,12 @@ app.MapControllers();
 
 app.MapGraphQL();
 
+app.UseCors(builder =>
+{
+    builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+});
 
 app.Run();
