@@ -1,5 +1,6 @@
 using Bogus;
 using GraphQL.Demo.Api.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.Demo.Api.Schema.Queries;
 
@@ -8,9 +9,12 @@ public class CourseQuery
     private readonly Faker<Course> _courseFaker;
     private readonly Faker<Student> _studentTypeFaker;
     private readonly Faker<Instructor> _instructorTypeFaker;
+    private readonly AppDbContext _appDbContext;
 
-    public CourseQuery()
+    public CourseQuery(AppDbContext appDbContext)
     {
+        _appDbContext = appDbContext;
+
         _instructorTypeFaker = new Faker<Instructor>()
             .RuleFor(f => f.Id, f => Guid.NewGuid())
             .RuleFor(f => f.FirstName, f => f.Name.FirstName())
@@ -29,6 +33,31 @@ public class CourseQuery
             .RuleFor(f => f.Subject, f => f.PickRandom<Subject>())
             .RuleFor(f => f.Instructor, f => _instructorTypeFaker.Generate())
             .RuleFor(f => f.Students, f => _studentTypeFaker.Generate(3));
+
+
+        _appDbContext.Courses.Add(new Course()
+        {
+            Id = Guid.NewGuid(),
+            Instructor = new Instructor()
+            {
+                FirstName = "Ömer",
+                LastName = "İpek"
+            },
+            Name = "GraphQL Course",
+            Subject = Subject.Science,
+            Students = new List<Student>()
+            {
+                new Student()
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = "Selami",
+                    LastName = "Orhan",
+                    GPA = 10.0,
+                }
+            }
+        });
+
+        _appDbContext.SaveChanges();
     }
 
     public IEnumerable<Course> GetCourses()
@@ -46,6 +75,9 @@ public class CourseQuery
         return course;
     }
 
-    [GraphQLDeprecated("this is deprecated")]
-    public string Instructions => "test";
+    [UseFiltering]
+    public List<Course> GetCourseByFiltering([Service] AppDbContext appDbContext)
+    {
+        return appDbContext.Courses.ToList();
+    }
 }

@@ -23,6 +23,21 @@
 }
 ```
 
+## 3- filtering
+
+
+parameter filtering.
+```json
+{
+  courseByFiltering (
+    where: { name: { contains: "Course" }}
+  ){
+    name
+  }
+}
+
+```
+
 ---
 
 # examples for mutation;
@@ -147,9 +162,4 @@ mutation {
     subject
   }
 }
-```
-
-
-
-```json
 ```
