@@ -1,8 +1,17 @@
+using GraphQL.Demo.Api;
 using GraphQL.Demo.Api.Schema.Mutations;
 using GraphQL.Demo.Api.Schema.Queries;
 using GraphQL.Demo.Api.Schema.Subscriptions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(opt =>
+{
+    opt.UseInMemoryDatabase("GraphQL.Demo-1").LogTo(Console.WriteLine)
+        .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+        .EnableSensitiveDataLogging();
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -11,7 +20,8 @@ builder.Services.AddGraphQLServer()
     .AddQueryType<CourseQuery>()
     .AddMutationType<CourseMutation>()
     .AddSubscriptionType<CourseSubscription>()
-    .AddInMemorySubscriptions();
+    .AddInMemorySubscriptions()
+    .AddFiltering();
 
 builder.Services.AddCors();
 
