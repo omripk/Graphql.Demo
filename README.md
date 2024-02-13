@@ -1,6 +1,7 @@
 # Graphql.Demo
 
 Medium Article 
+*[Markdown Guide](https://omripk.medium.com/bir-%C3%B6nce-ki-makalemin-%C3%BCzerinden-uzunca-bir-zaman-ge%C3%A7ti-acac108079db)*.
 
 # examples for queries;
 
